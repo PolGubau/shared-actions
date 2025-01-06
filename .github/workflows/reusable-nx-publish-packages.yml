@@ -28,7 +28,7 @@ jobs:
       - name: Nx set shas
         uses: nrwl/nx-set-shas@v4
       - name: Restore Pnpm Store and Install Dependencies
-        uses: zhumeisongsong/shared-actions/.github/actions/pnpm@main
+        uses: PolGubau/shared-actions/.github/actions/pnpm@main
       - name: Build
         run: pnpm nx run-many -target=build --all
       - name: Publish Packages

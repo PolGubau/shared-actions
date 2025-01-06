@@ -27,7 +27,7 @@ jobs:
           fetch-depth: 0
 
       - name: Restore Pnpm Store and Install Dependencies
-        uses: zhumeisongsong/shared-actions/.github/actions/pnpm@main
+        uses: PolGubau/shared-actions/.github/actions/pnpm@main
 
       - name:  Run semantic-release
         env:
