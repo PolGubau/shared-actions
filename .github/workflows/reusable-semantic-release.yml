@@ -1,0 +1,35 @@
+name: Reusable Semantic Release
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        required: false
+        type: string
+        default: .
+    secrets:
+      REPO_ACCESS_TOKEN:
+        required: true
+
+jobs:
+  release:
+    name: Release
+    timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Restore Pnpm Store and Install Dependencies
+        uses: zhumeisongsong/shared-actions/.github/actions/pnpm@main
+
+      - name:  Run semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
+        run: pnpm semantic-release

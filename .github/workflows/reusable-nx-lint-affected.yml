@@ -1,0 +1,33 @@
+name: Reusable Nx Lint
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        required: false
+        type: string
+        default: .
+
+jobs:
+  lint:
+    name: Lint
+    timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Nx set shas
+        uses: nrwl/nx-set-shas@v4
+      - name: Restore Pnpm Store and Install Dependencies
+        uses: zhumeisongsong/shared-actions/.github/actions/pnpm@main
+      - name: Lint
+        # Nx Affected runs only tasks affected by the changes in this PR/commit. Learn more: https://nx.dev/ci/features/affected
+        run: pnpm nx affected -target=lint --parallel=3
+
+

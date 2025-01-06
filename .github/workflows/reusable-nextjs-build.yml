@@ -1,0 +1,35 @@
+name: Reusable Nextjs Build
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        required: false
+        type: string
+        default: .
+      NEXT_PUBLIC_SITE_URL:
+        required: false
+        type: string
+
+jobs:
+  build:
+    name: Build
+    timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Restore Pnpm Store and Install Dependencies
+        uses: zhumeisongsong/shared-actions/.github/actions/pnpm@main
+
+      - name: Build with Next.js
+        run: pnpm run build
+        env:
+          NEXT_PUBLIC_SITE_URL: ${{ inputs.NEXT_PUBLIC_SITE_URL || '' }}

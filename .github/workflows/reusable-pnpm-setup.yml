@@ -1,0 +1,57 @@
+name: Reusable Pnpm Setup
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        required: false
+        type: string
+        default: .
+
+jobs:
+  setup:
+    name: Setup Pnpm
+    timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node.js Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: package.json
+
+      - name: Install Pnpm
+        uses: pnpm/action-setup@v4
+        id: pnpm-install
+        with:
+          package_json_file: package.json
+          run_install: false
+
+      - name: Get Pnpm Store Directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Pnpm Store
+        id: cache-pnpm-store
+        uses: actions/cache@v4
+        env:
+          cache-name: pnpm-store-cache
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ env.cache-name }}-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ env.cache-name }}-${{ runner.os }}-
+
+      - name: Install Dependencies
+        if: ${{ steps.cache-pnpm-store.outputs.cache-hit == 'false' }}
+        run: pnpm install --frozen-lockfile

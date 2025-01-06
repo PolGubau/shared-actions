@@ -1,0 +1,38 @@
+{
+	"name": "@polgubau/shared-actions",
+	"version": "1.7.0",
+	"license": "MIT",
+	"private": true,
+	"scripts": {
+		"commit": "git-cz"
+	},
+	"author": "Pol Gubau Amores <gubaupol@gmail.com>",
+	"devDependencies": {
+		"@semantic-release/changelog": "^6.0.3",
+		"@semantic-release/git": "^10.0.1",
+		"@polgubau/git-cz-config": "^1.0.0",
+		"git-cz": "4.9.0",
+		"semantic-release": "24.2.0"
+	},
+	"release": {
+		"branches": ["main"],
+		"plugins": [
+			"@semantic-release/commit-analyzer",
+			"@semantic-release/release-notes-generator",
+			"@semantic-release/github",
+			"@semantic-release/npm",
+			"@semantic-release/git",
+			"@semantic-release/changelog"
+		]
+	},
+	"packageManager": "pnpm@9.15.0",
+	"volta": {
+		"node": "22.12.0",
+		"pnpm": "9.15.0"
+	},
+	"config": {
+		"commitizen": {
+			"path": "git-cz"
+		}
+	}
+}

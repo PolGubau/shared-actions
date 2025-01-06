@@ -1,0 +1,31 @@
+name: Reusable Nx Build
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        required: false
+        type: string
+        default: .
+
+jobs:
+  test:
+    name: Nx Build
+    timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Nx set shas
+        uses: nrwl/nx-set-shas@v4
+      - name: Restore Pnpm Store and Install Dependencies
+        uses: zhumeisongsong/shared-actions/.github/actions/pnpm@main
+      - name: Build
+        run: pnpm nx run-many -target=build
+
